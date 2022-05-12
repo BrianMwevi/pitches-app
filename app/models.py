@@ -44,3 +44,38 @@ class User(UserMixin, db.Model):
 
     def __repr__(self) -> str:
         return self.username
+
+
+class Pitch(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    body = db.Column(db.Text(), nullable=False)
+    category = db.Column(db.String, default='General')
+    comments = db.relationship('Comment', backref='comments', lazy=True)
+    likes = db.relationship('Like', backref='likes', lazy=True)
+    dislikes = db.relationship('Dislike', backref='dislikes', lazy=True)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return True
+
+    def delete(self):
+        user = User.query.filter_by(id=self.author).first()
+        user.pitches.remove(self)
+        db.session.delete(self)
+        db.session.commit()
+        return user.save()
+
+    def update(self):
+        pitch = Pitch.query.filter_by(id=self.id).first()
+        pitch.category = self.category
+        pitch.body = self.body
+        return pitch.save()
+
+    def __repr__(self):
+        return self.body
+
+
