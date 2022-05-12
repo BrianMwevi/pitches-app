@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import 'macro.html' as macro %}
+{% block content %}
+<section class="form">
+  <div class="container pt-5">
+    <div class="row">
+      {% if pitches %}
+        {{macro.display_pitches(pitches, comment_form, current_user)}}
+      {% else %}
+        <div class="col-lg-6 mx-auto pt-5 justify-content-center">
+          <div class="card custom-bg mt-5 p-5 custom-card">
+             <h2 class="custom-color text-center">You don't have any pitches</h2>
+            <div class="text-center mt-5">
+              <a class="btn text-white custom-btn" href="{{ url_for('landing.new_pitch', user_id=current_user.id) }}">Create New Pitch</a>
+            </div>
+          </div>
+          
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
