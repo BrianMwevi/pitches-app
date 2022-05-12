@@ -79,3 +79,31 @@ class Pitch(db.Model):
         return self.body
 
 
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    pitch = db.Column(db.Integer, db.ForeignKey('pitch.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return True
+
+    def delete(self):
+        pitch = Pitch.query.filter_by(id=self.pitch).first()
+        pitch.comments.remove(self)
+        db.session.delete(self)
+        db.session.commit()
+        return pitch.save()
+
+    def update(self):
+        comment = Comment.query.filter_by(id=self.id).first()
+        comment.body = self.body
+        return comment.save()
+
+    def __repr__(self):
+        return self.body
+
