@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form">
+  <div class="container">
+    <div class="row">
+      <div class="col-auto col-lg-8 mx-auto mt-5 form-text">
+        <div class="text-center">
+          <h2 class="custom-color pt-2 pb-4">Create Account</h2>
+        </div>
+        <form method="POST" novalidate>
+          {{form.csrf_token}}
+          <div class="row mb-3">
+            <div class="col-lg-3 my-auto pt-2">
+                <p>{{form.email.label(class="custom-color")}}</p>
+            </div>
+            <div class="col-lg-9">
+              {{form.email(class="custom-input", placeholder="Enter email")}}
+            </div>
+          </div> 
+          <div class="row mb-3">
+            <div class="col-lg-3 my-auto pt-2">
+                <p>{{form.username.label(class="custom-color")}}</p>
+            </div>
+            <div class="col-lg-9">
+              {{form.username(class="custom-input", placeholder="Enter username")}}
+            </div>
+          </div> 
+          <div class="row mb-3">
+            <div class="col-lg-3 my-auto pt-2">
+                <p>{{form.password.label(class="custom-color")}}</p>
+            </div>
+            <div class="col-lg-9">
+              {{form.password(class="custom-input", placeholder="Enter password")}}
+            </div>
+          </div> 
+          <div class="row mb-3">
+            <div class="col-lg-3 my-auto pt-1">
+                <p>{{form.confirm_password.label(class="custom-color")}}</p>
+            </div>
+            <div class="col-lg-9">
+              {{form.confirm_password(class="custom-input", placeholder="Confirm password")}}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-lg-3 my-auto pt-1">
+                <p>{{form.submit.label(class="custom-color")}}</p>
+            </div>
+            <div class="col-lg-4 text-left">
+              {{form.submit(class="custom-btn")}}
+            </div>
+            <div class="col-lg-5 p-0 m-0 text-left my-auto">
+              Have an account?
+              <a class="custom-color pl-1" href="{{ url_for('auth.login') }}">Login</a>
+            </div>
+          </div>
+        </form>        
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
