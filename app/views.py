@@ -22,3 +22,17 @@ def register():
     return render_template('accounts/register.html', form=form)
 
 
+@auth.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        user = User.query.filter_by(email=email).first()
+        if user is not None and user.verify_password(password):
+            login_user(user, form.remember_me)
+            flash("Logged In Successfully!")
+            return redirect(request.args.get('next') or url_for('landing.pitches', user_id=user.id))
+        flash('Invalid email or password')
+    return render_template('accounts/login.html', form=form)
+
