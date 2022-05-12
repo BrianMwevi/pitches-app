@@ -24,3 +24,10 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+
+class PitchForm(FlaskForm):
+    body = TextAreaField('Free the mind and share the idea...',
+                         validators=[DataRequired()])
+    category = StringField('Enter pitch category', validators=[DataRequired()])
+    submit = SubmitField("Post Pitch")
