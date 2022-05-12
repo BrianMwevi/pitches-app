@@ -1,0 +1,68 @@
+{% macro display_pitches(pitches, comment_form, user) %}
+<div class="accordion" id="pitchAccordion">
+  {% for pitch in pitches %}
+   <div class="card my-4 custom-bg-2 custom-card p-3">     
+    <div class="card-header mb-0 pb-0" id="{{pitch.id}}">
+      <p class="badge badge-dark float-right">{{pitch.comments | length}}
+         <i class="fas custom-color fa-comment-dots fa-2x"></i>
+      </p>
+      <div class="pb-0 mb-0" data-toggle="collapse" data-target="#pitch{{pitch.id}}" aria-expanded="true" aria-controls="pitch{{pitch.id}}">
+         <span class="custom-color">{{pitch.body}}</span>
+         <div class="card-body m-0 p-0 pt-1">
+           <p class="m-0"><strong class="badge badge-dark custom-color">{{pitch.user}}</strong><span class="ml-3 badge badge-success text-white badge-pill">{{pitch.category}}</span></p>
+           <p class="p-0 m-0"><small>On {{pitch.created_at.strftime("%b  %d, %Y")}}</small></p><br>
+          </div>
+      </div>
+    </div>
+    <div id="pitch{{pitch.id}}" class="collapse mt-0 pt-0" aria-labelledby="{{pitch.id}}" data-parent="#pitchAccordion">
+      <div class="card-footer pt-0 mt-0">
+        {% if user.is_authenticated and user.id != pitch.author_id %}
+        <form method="POST" action="/comment/{{pitch.id}}/add">
+          {{comment_form.csrf_token}}
+          <div class="form-group">
+          {{ comment_form.body(class="custom-input", placeholder="Free the mind and share the burning idea") }}
+          </div>
+          {{comment_form.submit(class='custom-btn p-2')}}
+        </form>
+        {% else %}
+        <h6>{{pitch.comments|length}} comments</h6>
+        <div class="custom-bg-2">
+          {% for comment in pitch.comments %}
+          <p class="pl-3">
+              <span class="badge badge-secondary custom-color">By @{{comment.user}}</span> <small>{{comment.body}}</small>
+            </p>
+            {% endfor %}  
+          </div>
+          
+          {% endif %}
+        </div>
+      </div>
+  </div>
+  
+  {% endfor %}
+</div>
+{%endmacro%}
+
+{% macro display_latest_pitches(pitches, user) %}
+<div class="latest-piches mt-5">
+  <h2 class="text-center custom-color custom-bg p-0 mt-5">Popular Pitches</h2>
+  {% for pitch in pitches %}
+  <div class="card custom-card custom-bg-2 my-3">
+    <div class="card-header">
+      <p class="badge badge-secondary float-right">{{pitch.comments | length}}
+        <i class="fas custom-color fa-comment-dots fa-2x"></i>
+      </p>
+          <p class="custom-color">{{pitch.body}}</p>
+          <div class="card-footer pl-0">
+            <div class="text-left">
+              <p class="pl-3 mb-1 badge badge-dark custom-color">@{{pitch.user}}</p>
+            <p class="small mb-1">Posted on: <strong>{{pitch.created_at.strftime("%b  %d, %Y")}}</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+{% endmacro %}
+
