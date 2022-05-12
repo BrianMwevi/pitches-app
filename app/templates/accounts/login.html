@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form">
+  <div class="container">
+    <div class="row">
+      <div class="col-auto col-lg-8 mx-auto mt-5 form-text">
+        <div class="text-center">
+          <h2 class="pt-2 pb-4 custom-color">Sign In</h2>
+        </div>
+        <form method="POST" novalidate>
+          {{form.csrf_token}}
+          <div class="row mb-5">
+            <div class="col-lg-3 my-auto pt-2">
+                <p>{{form.email.label}}</p>
+            </div>
+            <div class="col-lg-9">
+              {{form.email(class="custom-input", placeholder="Enter email")}}
+            </div>
+          </div> 
+          
+          <div class="row mb-5">
+            <div class="col-lg-3 my-auto pt-2">
+                <p>{{form.password.label}}</p>
+            </div>
+            <div class="col-lg-9">
+              {{form.password(class="custom-input", placeholder="Enter password")}}
+            </div>
+          </div> 
+          
+          <div class="row mb-5">
+            <div class="col-lg-3 my-auto pt-1">
+                <p>{{form.submit.label}}</p>
+            </div>
+            <div class="col-lg-3 text-left">
+              {{form.submit(class="custom-btn")}}
+            </div>
+             <div class="col-lg-5 p-0 m-0 text-left my-auto">
+              Have an account?
+              <a class="custom-color pl-1" href="{{ url_for('auth.register') }}">Sign Up</a>
+            </div>
+          </div> 
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
