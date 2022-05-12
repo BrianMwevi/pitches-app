@@ -31,3 +31,8 @@ class PitchForm(FlaskForm):
                          validators=[DataRequired()])
     category = StringField('Enter pitch category', validators=[DataRequired()])
     submit = SubmitField("Post Pitch")
+
+
+class CommentForm(FlaskForm):
+    body = TextAreaField(validators=[DataRequired()])
+    submit = SubmitField('Post Comment')
