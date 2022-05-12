@@ -17,10 +17,9 @@ def create_app(config_environment):
     login_manager.init_app(app)
 
     # Register blueprint
-    from app.main import auth, landing, comments
+    from app.main import auth, landing
     from app import views, forms
     app.register_blueprint(auth.auth)
     app.register_blueprint(landing.landing)
-    app.register_blueprint(comments.comments)
 
     return app

@@ -103,3 +103,10 @@ def add_comment(pitch_id):
         comment.save()
         flash("Comment added successfully!")
         return redirect(request.args.get('next') or url_for('landing.index'))
+
+
+# Add like to Pitch
+# @login_required
+# @landing.route('pitch/<int:pitch_id>/like', methods=['POST'])
+# def like(pitch_id):
+#     form = like
