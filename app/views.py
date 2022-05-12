@@ -91,3 +91,15 @@ def new_pitch(user_id):
         return redirect(request.args.get('next') or url_for('landing.pitches', user_id=user_id))
     return render_template('forms/new_pitch.html', form=form)
 
+
+# Add comment to pitch view
+@login_required
+@landing.route('/comment/<int:pitch_id>/add', methods=['POST'])
+def add_comment(pitch_id):
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data,
+                          user_id=current_user.id, pitch=pitch_id)
+        comment.save()
+        flash("Comment added successfully!")
+        return redirect(request.args.get('next') or url_for('landing.index'))
