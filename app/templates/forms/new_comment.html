@@ -1,0 +1,18 @@
+{% block content %}
+  <div class="form">
+    <div class="container">
+      <div class="row">
+        <div class="col-auto col-lg-8 mx-auto form-text mt-5">
+          <h2>Post a New Pitch</h2>
+          <form method="POST">
+            {{comment_form.csrf_token}}
+            <div class="form-group">
+            {{ comment_form.body(class="custom-input pb-0 mt-5", placeholder="Free the mind and share the burning idea") }}
+          </div>
+            {{comment_form.submit(class='custom-btn mt-2 mb-3')}}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
