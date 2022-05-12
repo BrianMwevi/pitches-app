@@ -107,3 +107,22 @@ class Comment(db.Model):
     def __repr__(self):
         return self.body
 
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    liked_at = db.Column(db.DateTime, default=datetime.now())
+    pitch = db.Column(db.Integer, db.ForeignKey('pitch.id'))
+
+    def __repr__(self):
+        return self.user_id
+
+
+class Dislike(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    liked_at = db.Column(db.DateTime, default=datetime.now())
+    pitch = db.Column(db.Integer, db.ForeignKey('pitch.id'))
+
+    def __repr__(self):
+        return self.user_id
