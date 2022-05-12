@@ -1,0 +1,127 @@
+.navbar-bg {
+  background-color: #121212;
+  box-shadow: 0px 0px 5px #197391;
+}
+.home {
+  height: 100vh;
+  background-color: #121212;
+}
+.home-text {
+  font-size: 3rem;
+  line-height: 75px;
+  background: linear-gradient(90deg, #FFFFFF 0%, #00E0FF 73.34%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  margin: 12rem 0 0 13rem;
+}
+.custom-text {
+   background: linear-gradient(90deg, #FFFFFF 0%, #00E0FF 73.34%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.home-emphasis {  
+  font-size: 3rem
+}
+
+.home-img {
+  background: url(../images/group.png);
+  height: 95vh;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.home-btn {
+  margin: 2rem 0 0 13.5rem;
+}
+
+.custom-btn {
+  border: 2px solid #56CCF2;
+  background-color: transparent;
+  padding: 0.4rem 1.6rem;
+  color: #00E0FF;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.custom-btn:hover {
+  box-shadow: 0px 0px 8px #56CCF2;
+}
+
+.copyright {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+}
+
+.form {
+  min-height: 100vh;
+  background-color: #121212;
+  width: 100%;
+  color: #fff;
+}
+
+.custom-color {
+  color: #00E0FF;
+}
+
+.custom-bg {
+  background-color: #121212;
+  
+}
+
+.custom-card {
+  box-shadow: 0 0 6px #56cbf280;;
+  
+}
+.custom-card:hover {
+  cursor: pointer;
+  box-shadow: 0 0 10px #4ccffafb;;
+}
+
+.custom-bg-2 {
+  background: #010513;
+
+}
+
+.custom-input {
+  width: 100%;
+  color:#56CCF2;
+  border:none;
+  background-color: transparent;
+  outline:none;
+  padding: 0.4rem 0.3rem;
+  border-bottom: 1px solid #fff;
+}
+
+.custom-input:focus{
+  background-color: transparent;
+  border-radius: 0;
+  color:#56CCF2;
+  outline: none;
+  border:none;
+
+}
+
+.form-text {
+  margin-top: 10rem;
+  padding: 1.5rem 4rem 2rem;
+  border-radius: 4px;
+  box-shadow: 0 0 5px 2px #56cbf280;;
+  background: #010513;
+}
+
+.pitches {
+  padding-top: 8rem;
+}
+.latest-pitches {
+  margin-top: 6rem
+}
