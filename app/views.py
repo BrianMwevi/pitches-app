@@ -67,3 +67,13 @@ def pitch_repr(pitches):
             comment.user = User.query.filter_by(id=comment.user_id).first()
     return pitches
 
+
+# User Pitches View
+@login_required
+@landing.route('/<int:user_id>/pitches')
+def pitches(user_id):
+    comment_form = CommentForm()
+    pitches = Pitch.query.filter_by(
+        author_id=user_id).all()
+    return render_template('pitches.html', pitches=pitches, comment_form=comment_form)
+
