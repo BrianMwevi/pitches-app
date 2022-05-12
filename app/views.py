@@ -36,3 +36,17 @@ def login():
         flash('Invalid email or password')
     return render_template('accounts/login.html', form=form)
 
+
+@login_required
+@auth.route('/logout')
+def logout():
+    logout_user()
+    flash("Logged Out Successfully!")
+    return redirect(url_for('landing.index'))
+
+
+@auth.route('/forgot_password')
+def forgot_password():
+    return {'Email': 'brian@gmail.com'}
+# Authentication Views End
+
