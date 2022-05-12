@@ -77,3 +77,17 @@ def pitches(user_id):
         author_id=user_id).all()
     return render_template('pitches.html', pitches=pitches, comment_form=comment_form)
 
+
+# Add New Pitch View
+@login_required
+@landing.route('/pitches/<int:user_id>/new', methods=['GET', 'POST'])
+def new_pitch(user_id):
+    form = PitchForm()
+    if form.validate_on_submit():
+        body = form.body.data
+        category = form.category.data
+        pitch = Pitch(author_id=user_id, body=body, category=category)
+        pitch.save()
+        return redirect(request.args.get('next') or url_for('landing.pitches', user_id=user_id))
+    return render_template('forms/new_pitch.html', form=form)
+
