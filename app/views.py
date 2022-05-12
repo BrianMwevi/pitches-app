@@ -59,3 +59,11 @@ def index():
     latest_pitches = pitch_repr(Pitch.query.order_by(desc('created_at'))[:4])
     return render_template('index.html', pitches=pitches, latest_pitches=latest_pitches, comment_form=comment_form)
 
+
+def pitch_repr(pitches):
+    for pitch in pitches:
+        pitch.user = User.query.filter_by(id=pitch.author_id).first()
+        for comment in pitch.comments:
+            comment.user = User.query.filter_by(id=comment.user_id).first()
+    return pitches
+
