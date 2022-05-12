@@ -50,3 +50,12 @@ def forgot_password():
     return {'Email': 'brian@gmail.com'}
 # Authentication Views End
 
+
+# Homepage View
+@landing.route('/')
+def index():
+    comment_form = CommentForm()
+    pitches = pitch_repr(Pitch.query.all())
+    latest_pitches = pitch_repr(Pitch.query.order_by(desc('created_at'))[:4])
+    return render_template('index.html', pitches=pitches, latest_pitches=latest_pitches, comment_form=comment_form)
+
