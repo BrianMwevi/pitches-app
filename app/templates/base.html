@@ -12,7 +12,9 @@
   <title>Lightning Pitch</title>
 </head>
 <body>
-  
+  {% if current_user.is_authenticated %}
+    <div id="{{current_user.id}}" class="user_id d-none">Hello</div>
+  {% endif %}
   {% with messages = get_flashed_messages() %}
     {% if messages %}
         {% for message in messages %}

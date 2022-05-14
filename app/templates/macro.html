@@ -7,34 +7,37 @@
          <i class="fas custom-color fa-comment-dots fa-2x"></i>
       </p>
       <div class="pb-0 mb-0" data-toggle="collapse" data-target="#pitch{{pitch.id}}" aria-expanded="true" aria-controls="pitch{{pitch.id}}">
-         <span class="custom-color">{{pitch.body}}</span>
-         <div class="card-body m-0 p-0 pt-1">
-           <p class="m-0"><strong class="badge badge-dark custom-color">{{pitch.user}}</strong><span class="ml-3 badge badge-success text-white badge-pill">{{pitch.category}}</span></p>
-           <p class="p-0 m-0"><small>On {{pitch.created_at.strftime("%b  %d, %Y")}}</small></p><br>
-          </div>
+        <span class="custom-color">{{pitch.body}}</span>
+        <div class="card-body m-0 p-0 pt-1">
+          <p class="m-0"><small class="text-muted">By: </small><strong class="badge badge-dark custom-color">{{pitch.user}}</strong><span class="ml-3 badge badge-success text-white badge-pill">{{pitch.category}}</span></p>
+          <p class="p-0 m-0"><small>On {{pitch.created_at.strftime("%b  %d, %Y")}}</small></p><br>
+        </div>
       </div>
+    </div>
+    <div>
+      <p class="ml-4 badge custom-card {% if user.id != pitch.author_id %}vote {% endif %}" id="like like{{pitch.id}}"><i class="fa fa-thumbs-up vote-fa p-1 custom-color" ><sup class="text-white count-likes{{pitch.id}}">{{pitch.likes | length}}</sup></i></p>
+      <span class="ml-4 badge custom-card {% if user.id != pitch.author_id %}vote {% endif %}" id="dislike dislike{{pitch.id}}"><i class="fa fa-thumbs-down text-danger vote-fa p-1 "><sub class="text-white count-dislikes{{pitch.id}}">{{pitch.dislikes|length}}</sub></i></span>
     </div>
     <div id="pitch{{pitch.id}}" class="collapse mt-0 pt-0" aria-labelledby="{{pitch.id}}" data-parent="#pitchAccordion">
       <div class="card-footer pt-0 mt-0">
         {% if user.is_authenticated and user.id != pitch.author_id %}
-        <form method="POST" action="/comment/{{pitch.id}}/add">
-          {{comment_form.csrf_token}}
-          <div class="form-group">
-          {{ comment_form.body(class="custom-input", placeholder="Free the mind and share the burning idea") }}
-          </div>
-          {{comment_form.submit(class='custom-btn p-2')}}
-        </form>
-        {% else %}
-        <h6>{{pitch.comments|length}} comments</h6>
-        <div class="custom-bg-2">
-          {% for comment in pitch.comments %}
-          <p class="pl-3">
-              <span class="badge badge-secondary custom-color">By @{{comment.user}}</span> <small>{{comment.body}}</small>
-            </p>
-            {% endfor %}  
+            <form method="POST" class="comment-form" id="commentForm{{pitch.id}}">
+              {{comment_form.csrf_token}}
+              <div class="form-group">
+              {{ comment_form.body(class="custom-input", placeholder="Free the mind and share the burning idea") }}
+              </div>
+              <button type="submit" class="btn btn-sm custom-card custom-bg-2 custom-color"> Post Comment</button>
+            </form>
+        {% endif %}
+          <h6 class="mt-4 pl-3 custom-color">{{pitch.comments|length}} comments</h6>
+          <div class="custom-bg-2 comment-section{{pitch.id}}">
+            {% for comment in pitch.comments %}
+              <p class="pl-3">
+                <span class="badge badge-secondary custom-color">By @{{comment.user}}</span> <small>{{comment.body}}</small>
+              </p>
+              {% endfor %}  
           </div>
           
-          {% endif %}
         </div>
       </div>
   </div>
@@ -52,7 +55,7 @@
       <p class="badge badge-secondary float-right">{{pitch.comments | length}}
         <i class="fas custom-color fa-comment-dots fa-2x"></i>
       </p>
-          <p class="custom-color">{{pitch.body}}</p>
+          <p class="custom-color">{{pitch.body | truncate(80)}}</p>
           <div class="card-footer pl-0">
             <div class="text-left">
               <p class="pl-3 mb-1 badge badge-dark custom-color">@{{pitch.user}}</p>
