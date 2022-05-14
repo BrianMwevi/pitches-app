@@ -1,0 +1,3 @@
+Hello {{user.username}}
+Welcome to Elevator Pitch!
+We have just seen you have signed up for our application and want to welcome you to the family. Enjoy reading the pitches, like/dislike and leave comments.
