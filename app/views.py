@@ -1,24 +1,35 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from app.main.auth import auth
 from app.forms import RegisterForm, LoginForm, CommentForm, PitchForm
 from app.main.landing import landing
-from app.models import User, Pitch, Comment
+from app.models import User, Pitch, Comment, Like, Dislike
 from flask_login import login_required, login_user, logout_user, current_user
 from sqlalchemy import desc
-
+from app import photos
+import os
+from app.email import mail_message
 
 # Authentication Views Start
+
+
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        username = form.username.data
-        password = form.password.data
-        user = User(username=username, email=email, password=password)
-        user.save()
-        flash("Account created successfully")
-        return redirect(url_for('auth.login'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            email = form.email.data
+            user_email = User.query.filter_by(email=email).first()
+            if user_email:
+                flash("Email or username is already in use")
+                return render_template('accounts/register.html', form=form)
+            username = form.username.data
+            password = form.password.data
+            user = User(username=username, email=email, password=password)
+            user.save()
+            flash("Account created successfully")
+            mail_message("Welcome to Elevator Pitches!",
+                         "email/welcome_user", email, user=user)
+            return redirect(url_for('auth.login'))
     return render_template('accounts/register.html', form=form)
 
 
@@ -98,15 +109,47 @@ def new_pitch(user_id):
 def add_comment(pitch_id):
     form = CommentForm()
     if form.validate_on_submit():
-        comment = Comment(body=form.body.data,
-                          user_id=current_user.id, pitch=pitch_id)
-        comment.save()
+        new_comment = Comment(body=form.body.data,
+                              user_id=current_user.id, pitch=pitch_id)
+        new_comment.save()
+        user = User.query.filter_by(id=current_user.id).first()
+        comment = {'body': form.body.data,
+                   'user': user.username, 'pitch': pitch_id}
         flash("Comment added successfully!")
-        return redirect(request.args.get('next') or url_for('landing.index'))
+        return jsonify(comment)
+    return render_template('index.html')
 
 
 # Add like to Pitch
-# @login_required
-# @landing.route('pitch/<int:pitch_id>/like', methods=['POST'])
-# def like(pitch_id):
-#     form = like
+@login_required
+@landing.route('/pitch/<string:vote>/<int:pitch_id>', methods=['POST'])
+def toggleVotes(vote, pitch_id):
+    if vote == 'like':
+        new_like = Like(user_id=current_user.id, pitch_id=pitch_id)
+        new_like.toggleVote()
+    elif vote == 'dislike':
+        new_dislike = Dislike(user_id=current_user.id, pitch_id=pitch_id)
+        new_dislike.toggleVote()
+    likes = Like.query.filter_by(pitch_id=pitch_id).count()
+    dislikes = Dislike.query.filter_by(pitch_id=pitch_id).count()
+
+    return jsonify(likes, dislikes)
+
+
+@landing.route('/<int:user_id>/profile', methods=['GET', 'POST'])
+@login_required
+def profile(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if 'photo' in request.files:
+        user_image = f"/{user.profile_pic_path.split('/')[1]}"
+        path = os.path.abspath(os.environ.get(
+            'UPLOADED_PHOTOS_DEST') + user_image)
+        if os.path.exists(path):
+            os.remove(path)
+
+        filename = photos.save(request.files['photo'])
+        path = f'photos/{filename}'
+        user.profile_pic_path = path
+        user.save()
+        return redirect(url_for('landing.profile', user_id=user_id))
+    return render_template('profile.html', user=user)
