@@ -3,6 +3,7 @@
 ### Description
 
 A Flask web application where users can create, post and comment on elevator pitches.
+Demo: https://elevated-pitch.herokuapp.com/
 
 ### Technologies Used
 
@@ -19,7 +20,6 @@ A Flask web application where users can create, post and comment on elevator pit
 - Launch your terminal and paste the following command: `git clone https://github.com/BrianMwevi/pitches-app.git`
 - Change directory to pitches-app `cd pitches-app`
 - Open the project with your preferred IDE and run the following command in the terminal: `pip install -r requirements.txt`
-- Go to [NewsApi](https://newsapi.org/) and generate an API Key for your application
 - create a file named `start.sh` in the root of your application and change it's permissions: `chmod a+x start.py`
 - Create variables in the start.py file:
 - Run the application by typing the following in the terminal: `./start.sh`
