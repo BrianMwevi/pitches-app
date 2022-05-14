@@ -5,7 +5,20 @@ from flask_login import UserMixin
 from app import login_manager
 
 
-class User(UserMixin, db.Model):
+class CrudOperation:
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return True
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+        return True
+
+
+class User(UserMixin, db.Model, CrudOperation):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -13,6 +26,7 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
     pitches = db.relationship('Pitch', backref='pitches', lazy=True)
+    profile_pic_path = db.Column(db.String, nullable=True, unique=True)
 
     @property
     def password(self):
@@ -29,11 +43,6 @@ class User(UserMixin, db.Model):
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-        return True
-
     def add_comment(self, comment):
         self.comments.append(comment)
         return self.save()
@@ -46,7 +55,7 @@ class User(UserMixin, db.Model):
         return self.username
 
 
-class Pitch(db.Model):
+class Pitch(db.Model, CrudOperation):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     body = db.Column(db.Text(), nullable=False)
@@ -57,17 +66,11 @@ class Pitch(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-        return True
-
     def delete(self):
         user = User.query.filter_by(id=self.author).first()
         user.pitches.remove(self)
-        db.session.delete(self)
-        db.session.commit()
-        return user.save()
+        self.delete()
+        return self.save()
 
     def update(self):
         pitch = Pitch.query.filter_by(id=self.id).first()
@@ -79,7 +82,7 @@ class Pitch(db.Model):
         return self.body
 
 
-class Comment(db.Model):
+class Comment(db.Model, CrudOperation):
     id = db.Column(db.Integer, primary_key=True)
     pitch = db.Column(db.Integer, db.ForeignKey('pitch.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -87,17 +90,11 @@ class Comment(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-        return True
-
     def delete(self):
         pitch = Pitch.query.filter_by(id=self.pitch).first()
         pitch.comments.remove(self)
-        db.session.delete(self)
-        db.session.commit()
-        return pitch.save()
+        self.delete()
+        return self.save()
 
     def update(self):
         comment = Comment.query.filter_by(id=self.id).first()
@@ -108,21 +105,43 @@ class Comment(db.Model):
         return self.body
 
 
-class Like(db.Model):
+class Like(db.Model, CrudOperation):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     liked_at = db.Column(db.DateTime, default=datetime.now())
-    pitch = db.Column(db.Integer, db.ForeignKey('pitch.id'))
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'))
 
-    def __repr__(self):
-        return self.user_id
+    def toggleVote(self):
+        like = Like.query.filter_by(
+            pitch_id=self.pitch_id, user_id=self.user_id).first()
+        dislike = Dislike.query.filter_by(
+            pitch_id=self.pitch_id, user_id=self.user_id).first()
+        if like is None:
+            self.save()
+        elif like:
+            like.delete()
+
+        if dislike:
+            dislike.delete()
+        return True
 
 
-class Dislike(db.Model):
+class Dislike(db.Model, CrudOperation):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    liked_at = db.Column(db.DateTime, default=datetime.now())
-    pitch = db.Column(db.Integer, db.ForeignKey('pitch.id'))
+    disliked_at = db.Column(db.DateTime, default=datetime.now())
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'))
 
-    def __repr__(self):
-        return self.user_id
+    def toggleVote(self):
+        dislike = Dislike.query.filter_by(
+            pitch_id=self.pitch_id, user_id=self.user_id).first()
+        like = Like.query.filter_by(
+            pitch_id=self.pitch_id, user_id=self.user_id).first()
+
+        if dislike is None:
+            self.save()
+        elif dislike:
+            dislike.delete()
+        if like:
+            like.delete()
+        return True
