@@ -141,11 +141,12 @@ def toggleVotes(vote, pitch_id):
 def profile(user_id):
     user = User.query.filter_by(id=user_id).first()
     if 'photo' in request.files:
-        user_image = f"/{user.profile_pic_path.split('/')[1]}"
-        path = os.path.abspath(os.environ.get(
-            'UPLOADED_PHOTOS_DEST') + user_image)
-        if os.path.exists(path):
-            os.remove(path)
+        if user.profile_pic_path:
+            user_image = f"/{user.profile_pic_path.split('/')[1]}"
+            path = os.path.abspath(os.environ.get(
+                'UPLOADED_PHOTOS_DEST') + user_image)
+            if os.path.exists(path):
+                os.remove(path)
 
         filename = photos.save(request.files['photo'])
         path = f'photos/{filename}'
